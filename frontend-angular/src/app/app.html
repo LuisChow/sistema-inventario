@@ -1,0 +1,43 @@
+<header class="main-header">
+  
+  <!-- 🚨 TASA (Bs.) MOVIDA A LA IZQUIERDA -->
+  <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+    <label style="font-weight: bold; color: var(--text-muted); white-space: nowrap;">Tasa (Bs.):</label>
+    <input type="number" [(ngModel)]="inventoryService.tasaCambio" placeholder="0" min="0" step="0.1" 
+           style="width: 120px; font-size: 1.1rem; font-weight: bold; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); outline: none;">
+  </div>
+  
+  <!-- CENTRO: NAVEGACIÓN -->
+  <div class="header-content">
+    <button class="nav-btn" [class.active]="inventoryService.vistaActual === 'inventario'" (click)="inventoryService.vistaActual = 'inventario'">📦 Inventario</button>
+    <h1 class="nav-title" [class.active-title]="inventoryService.vistaActual === 'inicio'" (click)="inventoryService.vistaActual = 'inicio'" title="Ir al Inicio">🏠 Inicio</h1>
+    <button class="nav-btn" [class.active]="inventoryService.vistaActual === 'historial'" (click)="inventoryService.vistaActual = 'historial'">🧾 Historial</button>
+    <button class="nav-btn" [class.active]="inventoryService.vistaActual === 'configuracion'" (click)="inventoryService.vistaActual = 'configuracion'">⚙️ Configuración</button>
+  </div>
+
+  <!-- DERECHA: TEMAS -->
+  <div class="theme-selector" style="flex: 1; display: flex; justify-content: flex-end;">
+    <select #temaSelect [value]="temaActual" (change)="cambiarTema(temaSelect.value)">
+      <option value="dark">🌙 Oscuro</option>
+      <option value="light">☀️ Claro</option>
+      <option value="kitty">🎀 Hello Kitty</option>
+    </select>
+  </div>
+</header>
+
+@if (!inventoryService.tasaCambio || inventoryService.tasaCambio <= 0) {
+  <div class="tasa-warning" role="alert">
+    ⚠️ <strong>Tasa de cambio en 0.</strong>
+    Los montos en bolívares aparecerán como 0 hasta que ingreses la tasa en el campo del encabezado.
+  </div>
+}
+
+<app-main-view></app-main-view>
+
+<!-- Barra de carga global (se muestra cuando hay peticiones HTTP en curso) -->
+<app-loading-bar></app-loading-bar>
+
+<!-- Notificaciones globales (toasts), diálogos de confirmación y ayuda de atajos -->
+<app-toast></app-toast>
+<app-confirmation-dialog></app-confirmation-dialog>
+<app-shortcuts-help></app-shortcuts-help>

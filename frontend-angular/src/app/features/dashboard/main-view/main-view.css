@@ -1,0 +1,53 @@
+.dashboard-layout {
+  min-height: 100vh;
+  background-color: transparent !important;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+.workspace, .content {
+  background-color: transparent !important;
+}
+
+.topbar {
+  background-color: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar h1 { margin: 0; font-size: 1.5rem; color: var(--text); }
+.content { padding: 2rem; flex: 1; }
+.summary-cards { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.5rem; }
+
+.card {
+  flex: 1 1 180px;
+  background-color: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--accent);
+  color: var(--text);
+}
+
+.card.warning { border-left-color: #ff9800; }
+.card h3 { margin: 0 0 0.5rem 0; color: var(--text-muted); font-size: 0.85rem; }
+.card .number { margin: 0; font-size: 1.4rem; font-weight: bold; }
+
+.workspace { padding: 1rem 0; border-radius: 8px; }
+.workspace h2 { margin-top: 0; color: var(--text); }
+
+.dashboard-header-bar {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+}
+.dashboard-header-bar h2 { margin: 0; color: var(--text); font-size: 1.2rem; }
+
+.month-filter { display: flex; align-items: center; gap: 10px; }
+.month-filter label { color: var(--text-muted); font-size: 0.9rem; font-weight: bold; }
+.month-filter input[type="month"]::-webkit-calendar-picker-indicator { filter: invert(var(--calendar-invert)); cursor: pointer; }

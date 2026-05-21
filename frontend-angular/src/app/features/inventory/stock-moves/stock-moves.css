@@ -1,0 +1,73 @@
+.moves-container {
+  background-color: var(--bg-card) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 2rem auto; 
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+h3 { color: var(--text); margin-top: 0; margin-bottom: 1.5rem; }
+
+/* === FILTROS === */
+.filters-bar {
+  display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 1.5rem;
+}
+.search-box { flex: 1 1 40%; min-width: 250px; }
+.filter-box, .date-box { flex: 1 1 20%; min-width: 160px; }
+
+/* === ACORDEÓN DE FACTURAS === */
+.facturas-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+
+.factura-card {
+  background-color: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; transition: all 0.3s ease;
+}
+.factura-card:hover { border-color: var(--accent); }
+
+.factura-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.2rem; cursor: pointer; background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+}
+.factura-header:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+.f-info-principal { display: flex; align-items: center; gap: 15px; flex: 1; }
+.f-descripcion { font-weight: bold; font-size: 1.05rem; color: var(--text); }
+.f-fecha { font-size: 0.85rem; color: var(--text); opacity: 0.8; }
+
+.f-totales { display: flex; align-items: center; gap: 20px; }
+.total-monto, .total-ganancia { display: flex; flex-direction: column; align-items: flex-end; }
+.t-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; }
+.total-monto strong { font-size: 1.15rem; }
+.total-ganancia .ganancia { font-weight: bold; font-size: 1rem; }
+.f-toggle-icon { font-size: 0.9rem; opacity: 0.6; margin-left: 10px; }
+
+/* === DETALLES DE LA FACTURA (Tabla Interna) === */
+.factura-body { padding: 1rem; border-top: 1px dashed var(--border); background-color: rgba(0, 0, 0, 0.05); }
+.detalles-table { width: 100%; border-collapse: collapse; text-align: left; }
+.detalles-table th { padding: 0.5rem; font-size: 0.85rem; text-transform: uppercase; color: var(--text); opacity: 0.8; border-bottom: 1px solid var(--border); }
+.detalles-table td { padding: 0.8rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text) !important; }
+.detalles-table tr:last-child td { border-bottom: none; }
+
+.t-cod { font-family: monospace; opacity: 0.8; }
+.t-cant { font-weight: bold; text-align: center; }
+.t-bs { font-size: 0.85rem; opacity: 0.7; }
+
+/* === ETIQUETAS Y COLORES === */
+.badge { padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: bold; font-size: 0.85rem; letter-spacing: 0.5px; }
+.entrada { background-color: #008ba3; color: #ffffff; border: 1px solid #005f73; }
+.salida { background-color: #d32f2f; color: #ffffff; border: 1px solid #9a0007; }
+.ajuste { background-color: #f57c00; color: #ffffff; border: 1px solid #e65100; }
+
+.ganancia { color: #4caf50; }
+.gasto { color: #f44336; }
+
+/* === PAGINACIÓN === */
+.pagination-controls { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; }
+.btn-page { background-color: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.btn-page:hover:not(:disabled) { background-color: var(--accent); color: white; border-color: var(--accent); }
+.btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-info { color: var(--text); font-weight: bold; }

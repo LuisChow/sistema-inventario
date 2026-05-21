@@ -1,0 +1,255 @@
+<div class="moves-container">
+  <h3>🧾 Historial de Transacciones y Facturación</h3>
+
+  <div class="filters-bar">
+    <input type="text" class="search-box" [(ngModel)]="textoBusqueda" placeholder="🔍 Buscar por cliente, producto o factura...">
+    
+    <select class="filter-box" [(ngModel)]="tipoSeleccionado" (ngModelChange)="guardarFiltroHistorial()">
+      <option value="Todos">Todas las operaciones</option>
+      <option value="Ventas">🛒 Ventas (Facturas)</option>
+      <option value="PorCobrar">⏳ Cuentas por Cobrar (Crédito)</option>
+      <option value="Entradas">📦 Entradas Iniciales y Entradas</option>
+      <option value="Ajustes">✏️ Ajustes, Modificaciones y Averías</option>
+    </select>
+
+    <input type="month" class="date-box" [(ngModel)]="mesAnoSeleccionado" onclick="this.showPicker()">
+    
+    <button class="btn-page" style="background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: auto;" (click)="exportarHistorialExcel()">
+      📗 Exportar a Excel
+    </button>
+  </div>
+
+  <div class="facturas-list">
+    @for (factura of facturasPaginadas; track factura.id) {
+      
+      <div class="factura-card" [style.opacity]="factura.estado === 'Anulado' ? '0.6' : '1'" style="display: flex; flex-direction: column; padding: 0;">
+        
+        <div class="factura-header" (click)="toggleExpandir(factura.id)" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+          
+          <div class="f-info-principal">
+            @if (factura.estado === 'Anulado') {
+              <span style="background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-right: 10px;">
+                🚫 ANULADO
+              </span>
+            }
+
+            <span class="badge" 
+                  [class.entrada]="factura.tipoOperacion === 'Entrada Inicial' || factura.tipoOperacion === 'Entrada'"
+                  [class.salida]="factura.tipoOperacion === 'Venta'"
+                  [class.ajuste]="factura.tipoOperacion === 'Ajuste' || factura.tipoOperacion === 'Modificación'"
+                  [style.background-color]="factura.tipoOperacion === 'Avería' ? '#e74c3c' : null"
+                  [style.color]="factura.tipoOperacion === 'Avería' ? 'white' : null">
+              {{ factura.tipoOperacion }}
+            </span>
+            
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span class="f-descripcion">
+                <s *ngIf="factura.estado === 'Anulado'">{{ factura.tipoOperacion === 'Venta' ? factura.clienteNombre : factura.descripcion }}</s>
+                <ng-container *ngIf="factura.estado !== 'Anulado'">{{ factura.tipoOperacion === 'Venta' ? factura.clienteNombre : factura.descripcion }}</ng-container>
+              </span>
+              @if (factura.tipoOperacion === 'Venta') {
+                <span style="font-size: 0.8rem; color: var(--text-muted);">RIF/CI: {{ factura.clienteDocumento }} | Tel: {{ factura.clienteTelefono }}</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">📍 Ubicación: {{ factura.clienteDireccion }}</span>
+              }
+            </div>
+            <span class="f-fecha">{{ factura.fecha | date:'dd/MM/yyyy, h:mm a' }}</span>
+          </div>
+
+          <div class="f-totales" style="display: flex; align-items: center; gap: 15px;">
+            @if (factura.tipoOperacion === 'Venta') {
+              <div class="total-monto" style="text-align: right;">
+                <span class="t-label" style="display: block; margin-bottom: 2px;">Cobrado:</span>
+                <strong style="color: #2ecc71; font-size: 1.1rem;">
+                  <s *ngIf="factura.estado === 'Anulado'">${{ factura.totalPagado.toFixed(2) }}</s>
+                  <ng-container *ngIf="factura.estado !== 'Anulado'">${{ factura.totalPagado.toFixed(2) }}</ng-container>
+                </strong>
+                <span class="t-bs" style="font-size: 0.8rem; opacity: 0.8"> / {{ factura.totalPagadoBs.toFixed(2) }} Bs</span>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Facturado: ${{ factura.totalUsd.toFixed(2) }}</div>
+              </div>
+              <div class="total-ganancia" style="text-align: right; border-left: 1px solid var(--border-color); padding-left: 15px;">
+                <span class="t-label" style="display: block; margin-bottom: 2px;">Ganancia Real:</span>
+                <strong [style.color]="factura.gananciaRealizadaUsd < 0 ? '#e74c3c' : '#2ecc71'">
+                  <s *ngIf="factura.estado === 'Anulado'">{{ factura.gananciaRealizadaUsd >= 0 ? '+' : '' }}${{ factura.gananciaRealizadaUsd.toFixed(2) }}</s>
+                  <ng-container *ngIf="factura.estado !== 'Anulado'">{{ factura.gananciaRealizadaUsd >= 0 ? '+' : '' }}${{ factura.gananciaRealizadaUsd.toFixed(2) }}</ng-container>
+                </strong><br>
+                <span [style.color]="factura.gananciaRealizadaBs < 0 ? '#e74c3c' : '#2ecc71'" style="font-size: 0.8rem; opacity: 0.8">
+                  {{ factura.gananciaRealizadaBs >= 0 ? '+' : '' }}{{ factura.gananciaRealizadaBs.toFixed(2) }} Bs
+                </span>
+              </div>
+            } @else if (factura.tipoOperacion === 'Modificación') {
+              <div class="total-monto">
+                <span class="t-label" style="color: #3498db; font-style: italic;">Modificación de Registro</span>
+                <strong style="color: #3498db; font-size: 0.9rem;">0 Impacto $</strong>
+              </div>
+            } @else {
+              <div class="total-monto">
+                <span class="t-label">Total: </span>
+                <strong [ngClass]="{
+                    'gasto': factura.tipoOperacion === 'Entrada Inicial' || factura.tipoOperacion === 'Entrada' || factura.tipoOperacion === 'Avería', 
+                    'ganancia': factura.tipoOperacion === 'Ajuste' && factura.detalles[0].tipo === 'Entrada'
+                  }">
+                  <s *ngIf="factura.estado === 'Anulado'">{{ (factura.tipoOperacion === 'Entrada Inicial' || factura.tipoOperacion === 'Entrada' || factura.tipoOperacion === 'Avería') ? '-' : '+' }}${{ factura.totalUsd.toFixed(2) }}</s>
+                  <ng-container *ngIf="factura.estado !== 'Anulado'">{{ (factura.tipoOperacion === 'Entrada Inicial' || factura.tipoOperacion === 'Entrada' || factura.tipoOperacion === 'Avería') ? '-' : '+' }}${{ factura.totalUsd.toFixed(2) }}</ng-container>
+                </strong>
+                <span class="t-bs" style="font-size: 0.8rem; opacity: 0.8"> / {{ (factura.tipoOperacion === 'Entrada Inicial' || factura.tipoOperacion === 'Entrada' || factura.tipoOperacion === 'Avería') ? '-' : '+' }}{{ factura.totalBs.toFixed(2) }} Bs</span>
+              </div>
+            }
+            <div class="f-toggle-icon" style="margin-left: 10px;">{{ expandidos[factura.id] ? '▲' : '▼' }}</div>
+          </div>
+        </div>
+
+        @if (factura.tipoOperacion === 'Venta' || factura.estado !== 'Anulado') {
+          <div style="padding: 10px 15px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center;">
+            @if (factura.estado !== 'Anulado' && factura.tipoOperacion === 'Venta') {
+              @if (factura.totalPagado < factura.totalUsd - 0.01) {
+                <span style="background: #e67e22; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+                  DEUDA RESTANTE: ${{ (factura.totalUsd - factura.totalPagado).toFixed(2) }}
+                </span>
+                <button (click)="abrirModalPago(factura, $event)" style="background: #2ecc71; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; border: none; font-weight: bold;">
+                  💸 Agregar Pago
+                </button>
+              } @else {
+                <span style="background: #27ae60; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+                  PAGADO COMPLETO
+                </span>
+              }
+            }
+
+            @if (factura.tipoOperacion === 'Venta') {
+              <button (click)="imprimirFactura(factura, $event)" style="background: #3498db; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; border: none; font-weight: bold; margin-left: auto;">
+                🖨️ Imprimir
+              </button>
+            }
+
+            @if (factura.estado !== 'Anulado') {
+              <button class="btn-eliminar" (click)="abrirModalRevertir(factura, $event)" style="background: #e74c3c; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; border: none; font-weight: bold;"
+                [style.margin-left]="factura.tipoOperacion === 'Venta' ? '0' : 'auto'">
+                🗑️ Anular Operación
+              </button>
+            }
+          </div>
+        }
+
+        @if (expandidos[factura.id]) {
+          <div class="factura-body" style="padding: 15px; border-top: 1px solid var(--border-color);">
+            <table class="detalles-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Producto / Concepto</th>
+                  <th>Cant.</th>
+                  <th>Total Item</th>
+                  @if (factura.tipoOperacion === 'Venta') { <th>Ganancia Esperada</th> }
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of factura.detalles; track $index) {
+                  @if (item.tipo === 'Abono') {
+                    <tr style="background: rgba(46, 204, 113, 0.1);">
+                      <td colspan="3" style="text-align: right; color: var(--accent); font-weight: bold;">🗓️ {{ item.fecha | date:'dd/MM/yy, h:mm a' }} - ABONO REGISTRADO:</td>
+                      <td style="color: var(--accent); font-weight: bold;">+${{ item.valorTotalUsd.toFixed(2) }} <br><span class="t-bs" style="font-size: 0.85rem">+{{ item.valorTotalBs.toFixed(2) }} Bs</span></td>
+                      @if (factura.tipoOperacion === 'Venta') { <td></td> }
+                    </tr>
+                  } @else if (item.tipo === 'Modificacion') {
+                    <!-- 🚨 LA TABLA DE AUDITORÍA AHORA RESPETA LAS COLUMNAS PERFECTAMENTE -->
+                    <tr>
+                      <td class="t-cod">{{ item.codigoProducto }}</td>
+                      <td>
+                        {{ item.nombreProducto }}<br>
+                        <span style="color: #3498db; font-size: 0.85rem; font-style: italic;">📝 {{ item.descripcion }}</span>
+                      </td>
+                      <td class="t-cant">
+                        <strong style="color: var(--text-muted);">0</strong>
+                      </td>
+                      <td>
+                        <strong style="color: var(--text-muted);">$0.00</strong><br>
+                        <span class="t-bs"> / 0.00 Bs</span>
+                      </td>
+                      @if (factura.tipoOperacion === 'Venta') { <td></td> }
+                    </tr>
+                  } @else if (item.tipo !== 'Anulacion') {
+                    <tr>
+                      <td class="t-cod">{{ item.codigoProducto }}</td>
+                      <td>{{ item.nombreProducto }}</td>
+                      <td class="t-cant">
+                        <strong [ngClass]="{'ganancia': item.tipo === 'Entrada', 'gasto': item.tipo === 'Salida'}">
+                          {{ item.tipo === 'Entrada' ? '+' : '-' }}{{ item.cantidad }}
+                        </strong>
+                      </td>
+                      <td>
+                        <strong [ngClass]="{
+                            'gasto': factura.tipoOperacion === 'Entrada Inicial' || factura.tipoOperacion === 'Entrada' || factura.tipoOperacion === 'Avería' || (factura.tipoOperacion === 'Ajuste' && item.tipo === 'Salida'), 
+                            'ganancia': factura.tipoOperacion === 'Venta' || (factura.tipoOperacion === 'Ajuste' && item.tipo === 'Entrada')
+                          }">
+                          {{ (factura.tipoOperacion === 'Entrada Inicial' || factura.tipoOperacion === 'Entrada' || factura.tipoOperacion === 'Avería' || (factura.tipoOperacion === 'Ajuste' && item.tipo === 'Salida')) ? '-' : '+' }}${{ item.valorTotalUsd.toFixed(2) }}
+                        </strong>
+                        <span class="t-bs"> / {{ (item.valorTotalBs || 0).toFixed(2) }} Bs</span>
+                      </td>
+                      @if (factura.tipoOperacion === 'Venta') {
+                        <td class="ganancia">+${{ item.gananciaUsd.toFixed(2) }} <br><span class="t-bs" style="font-size: 0.85rem">+{{ (item.gananciaBs || 0).toFixed(2) }} Bs</span></td>
+                      }
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="pagination-controls">
+    <button class="btn-page" (click)="cambiarPagina(-1)" [disabled]="paginaActual === 1">◀ Anterior</button>
+    <span class="page-info">Página {{ paginaActual }} de {{ totalPaginas }}</span>
+    <button class="btn-page" (click)="cambiarPagina(1)" [disabled]="paginaActual === totalPaginas">Siguiente ▶</button>
+  </div>
+</div>
+
+@if (facturaAPagar) {
+  <div class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-content" style="text-align: center; max-width: 400px;">
+      <h3 style="margin-top:0; color: #2ecc71; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        💸 Registrar Abono a Crédito
+      </h3>
+      <p style="color: var(--text-light); margin-top: 15px; font-size: 1.1rem;">
+        Cliente: <strong style="color: var(--accent);">{{ facturaAPagar.clienteNombre }}</strong>
+      </p>
+      
+      <div style="background: var(--bg-hover); padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Deuda Restante de la Factura:</p>
+        <p style="margin: 5px 0 0 0; font-size: 2.2rem; font-weight: bold; color: #e67e22;">
+          ${{ (facturaAPagar.totalUsd - facturaAPagar.totalPagado).toFixed(2) }}
+        </p>
+      </div>
+
+      <div style="text-align: left;">
+        <label style="font-weight: bold; color: var(--text-light);">Monto a Abonar (en dólares):</label>
+        <input type="number" [(ngModel)]="montoAbono" min="0" [max]="facturaAPagar.totalUsd - facturaAPagar.totalPagado" style="width: 100%; padding: 10px; margin-top: 5px; background: var(--bg-dark); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1.2rem; text-align: center; font-weight: bold;">
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 25px;">
+        <button (click)="cerrarModalPago()" style="padding: 10px 20px; background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Cancelar</button>
+        <button (click)="confirmarPago()" style="padding: 10px 20px; background: #2ecc71; color: white; border: none; font-weight: bold; border-radius: 4px; cursor: pointer;">✅ Guardar Pago</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (facturaARevertir) {
+  <div class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-content" style="text-align: center; max-width: 400px;">
+      <h3 style="margin-top:0; color: #e74c3c; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        ⚠️ Anular Operación
+      </h3>
+      <p style="color: var(--text-light); margin-top: 15px; line-height: 1.5; font-size: 1rem;">
+        Esta acción <strong>devolverá los cálculos contables a su estado original</strong> y tachará este registro en el historial.
+      </p>
+
+      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 25px;">
+        <button (click)="cerrarModalRevertir()" style="padding: 10px 20px; background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Cancelar</button>
+        <button (click)="confirmarReversion()" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; font-weight: bold; border-radius: 4px; cursor: pointer;">🗑️ Confirmar Anulación</button>
+      </div>
+    </div>
+  </div>
+}

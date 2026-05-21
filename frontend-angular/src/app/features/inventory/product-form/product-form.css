@@ -1,0 +1,42 @@
+.form-header { color: var(--text); cursor: pointer; transition: background-color 0.2s ease; }
+.form-header:hover { background-color: var(--bg-hover); }
+.toggle-icon { font-size: 0.9rem; color: var(--text-muted); }
+
+.form-container {
+  background-color: var(--bg-card); 
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1.5rem; 
+  border-radius: 8px;
+  margin-bottom: 2rem; 
+  border: 1px solid var(--border);
+}
+
+h3 { color: var(--accent); margin-bottom: 1rem; }
+.form-grid { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
+.input-group { flex: 1 1 180px; display: flex; flex-direction: column; min-width: 0; }
+.input-group label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+
+.button-group { flex: 0.5; min-width: 100px; }
+button {
+  padding: 10px 14px; background-color: var(--accent); color: white;
+  border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: filter 0.2s ease;
+}
+button:hover { filter: brightness(1.2); }
+
+.icon-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+  padding: 0.5rem; cursor: pointer; border-radius: 4px; display: flex; justify-content: center; align-items: center;
+  width: 32px; height: 32px; font-size: 1rem; transition: all 0.3s ease;
+}
+.btn-delete { color: #f44336; border-color: #f4433650; }
+.btn-add { color: #4caf50; border-color: #4caf5050; }
+.btn-edit { color: #ff9800; border-color: #ff980050; }
+.btn-delete:hover { background-color: #f4433620; border-color: #f44336; }
+.btn-add:hover { background-color: #4caf5020; border-color: #4caf50; }
+.btn-edit:hover { background-color: #ff980020; border-color: #ff9800; }
+
+.label-with-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem; }
+.label-with-actions label { margin-bottom: 0; }
+.mini-actions { display: flex; gap: 0.3rem; }
+.mini-actions .icon-btn { width: 22px; height: 22px; font-size: 0.7rem; padding: 0; }

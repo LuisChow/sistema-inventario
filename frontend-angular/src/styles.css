@@ -1,0 +1,229 @@
+/* =========================================================
+   1. VARIABLES DE TEMAS (AHORA USAN CLASES INFALIBLES)
+   ========================================================= */
+:root, body.dark {
+  --bg-app: #121212;
+  --bg-card: #1e1e1e;
+  --text: #ffffff;
+  --text-muted: #aaaaaa;
+  --accent: #00e5ff;
+  --border: #444444;
+  --bg-hover: #2a2a2a;
+  --bg-thead: #1a1a1a;
+  --focus-ring: rgba(0, 229, 255, 0.25);
+  --calendar-invert: 1;
+  --input-bg: #121212;
+}
+
+body.light {
+  --bg-app: #e4e8ec;
+  --bg-card: #ffffff;
+  --text: #1a1d20;
+  --text-muted: #5c636a;
+  --accent: #0d6efd;
+  --border: #adb5bd;
+  --bg-hover: #f1f3f5;
+  --bg-thead: #e9ecef;
+  --focus-ring: rgba(13, 110, 253, 0.25);
+  --calendar-invert: 0;
+  --input-bg: #ffffff;
+}
+
+body.kitty {
+  --bg-app: transparent;
+  --bg-card: rgba(255, 140, 180, 0.25); 
+  --text: #4a001f;
+  --text-muted: #9d0208;
+  --accent: #d90429;
+  --border: rgba(255, 255, 255, 0.5); 
+  --bg-hover: rgba(255, 255, 255, 0.3);
+  --bg-thead: rgba(255, 140, 180, 0.4); 
+  --focus-ring: rgba(217, 4, 41, 0.3);
+  --calendar-invert: 0;
+  --input-bg: rgba(255, 255, 255, 0.5);
+}
+
+/* =========================================================
+   2. CONFIGURACIÓN GLOBAL
+   ========================================================= */
+body {
+  background-color: var(--bg-app);
+  color: var(--text);
+  margin: 0;
+  font-family: sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.kitty {
+  background-image: url('./assets/hellokitty.jpg') !important;
+  background-size: cover !important; 
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+/* =========================================================
+   3. BARRA SUPERIOR (HEADER) CENTRADA PERFECTAMENTE
+   ========================================================= */
+/* =========================================================
+   3. BARRA SUPERIOR (HEADER) CON NAVEGACIÓN
+   ========================================================= */
+.main-header {
+  background-color: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  gap: 30px; 
+}
+
+.nav-title {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--text-muted); 
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 5px 15px;
+  border-radius: 8px;
+}
+
+.nav-title.active-title {
+  color: var(--text);
+  transform: scale(1.1);
+  background-color: var(--bg-hover);
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.nav-btn:hover, .nav-title:hover {
+  background-color: var(--bg-hover);
+  color: var(--accent);
+}
+
+.nav-btn.active {
+  color: var(--text);
+  background-color: var(--bg-hover);
+  border-bottom: 3px solid var(--accent);
+}
+/* =========================================================
+   4. INPUTS Y SELECTS
+   ========================================================= */
+input:not([type="file"]), select {
+  background-color: var(--input-bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.theme-selector select {
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* =========================================================
+   5. MODALES DE ESCRITORIO
+   ========================================================= */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background-color: var(--bg-card); border: 1px solid var(--border);
+  padding: 2rem; border-radius: 12px;
+  width: 90%; max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* CUADRICULA PERFECTA PARA EL MODAL DE EDICION */
+.edit-grid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.edit-grid label {
+  font-weight: bold;
+  text-align: right;
+  color: var(--text);
+  margin: 0;
+}
+
+.edit-grid input, .edit-grid select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  box-sizing: border-box;
+}
+
+@media print {
+  /* Oculta menú lateral, barra superior, y botones de acción al imprimir */
+  .sidebar, .filters-bar, .btn-page, .f-toggle-icon, button { display: none !important; }
+  .moves-container { padding: 0; margin: 0; width: 100%; }
+  body { background: white; color: black; } /* Fondo blanco para ahorrar tinta */
+}
+
+/* =========================================================
+   6. WARNING TASA = 0
+   ========================================================= */
+.tasa-warning {
+  background: #fff3cd;
+  color: #856404;
+  border-bottom: 2px solid #ffc107;
+  padding: 10px 24px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.tasa-warning strong { font-weight: bold; }
+body.dark .tasa-warning {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffe082;
+  border-bottom-color: rgba(255, 193, 7, 0.6);
+}
+body.kitty .tasa-warning {
+  background: rgba(255, 235, 59, 0.7);
+  color: #4a001f;
+  border-bottom-color: #d90429;
+}

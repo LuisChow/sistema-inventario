@@ -1,0 +1,80 @@
+<div class="dashboard-layout">
+  <main class="content">
+    
+    <!-- ============================================== -->
+    <!-- 🏠 PANTALLA 1: INICIO (Stats + Crear Producto) -->
+    <!-- ============================================== -->
+    @if (inventoryService.vistaActual === 'inicio') {
+      <div class="dashboard-header-bar">
+        <h2>📊 Estadísticas Generales</h2>
+        <div class="month-filter">
+          <label>📅 Mes a consultar:</label>
+          <input type="month" [(ngModel)]="inventoryService.mesDashboard" onclick="this.showPicker()">
+        </div>
+      </div>
+
+      <div class="summary-cards">
+        <div class="card">
+          <h3>Total Catálogo</h3>
+          <p class="number">{{ inventoryService.totalProductos }}</p>
+        </div>
+        <div class="card warning">
+          <h3>Bajo Stock (Alertas)</h3>
+          <p class="number" style="color: #ff9800;">{{ inventoryService.bajoStock }}</p>
+        </div>
+        <div class="card">
+          <h3>Costos (Inversión)</h3>
+          <!-- Formato unificado con las demás tarjetas -->
+          <p class="number" style="color: #ff4d4d;">
+            ${{ inventoryService.inversionTotalCat | number:'1.2-2' }}
+          </p>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 4px;">
+            {{ inventoryService.inversionTotalCatBs | number:'1.2-2' }} Bs
+          </span>
+        </div>
+        <div class="card" style="border-left-color: #00e5ff;">
+          <h3>Ventas del Mes (Bruto)</h3>
+          <p class="number" style="color: #00e5ff;">${{ inventoryService.ingresosDelMes | number:'1.2-2' }}</p>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 4px;">{{ inventoryService.ingresosDelMesBs | number:'1.2-2' }} Bs</span>
+          <p style="font-size: 0.8rem; margin-top: 8px; color: var(--text-muted)">🛒 {{ inventoryService.cantidadVentasMes || 0 }} ventas realizadas</p>
+        </div>
+        <div class="card" style="border-left-color: #4caf50;">
+          <h3>Ganancia Neta (Mes)</h3>
+          <p class="number" style="color: #4caf50;">+${{ inventoryService.gananciaDelMes | number:'1.2-2' }}</p>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 4px;">+{{ inventoryService.gananciaDelMesBs | number:'1.2-2' }} Bs</span>
+        </div>
+      </div>
+
+      <div class="workspace" style="margin-top: 2rem;">
+        <app-product-form></app-product-form>
+      </div>
+    }
+
+    <!-- ============================================== -->
+    <!-- 📦 PANTALLA 2: INVENTARIO (Tabla + Carrito)    -->
+    <!-- ============================================== -->
+    @if (inventoryService.vistaActual === 'inventario') {
+      <div class="workspace">
+        <h2 style="margin-bottom: 1rem;">📦 Listado de Productos y Punto de Venta</h2>
+        <app-product-list></app-product-list> 
+      </div>
+    }
+
+    <!-- ============================================== -->
+    <!-- 🧾 PANTALLA 3: HISTORIAL                       -->
+    <!-- ============================================== -->
+    @if (inventoryService.vistaActual === 'historial') {
+      <div class="workspace">
+        <app-stock-moves></app-stock-moves>
+      </div>
+    }
+
+    <!-- ============================================== -->
+    <!-- ⚙️ PANTALLA 4: CONFIGURACIÓN                  -->
+    <!-- ============================================== -->
+    @if (inventoryService.vistaActual === 'configuracion') {
+      <app-settings-view></app-settings-view>
+    }
+
+  </main>
+</div>

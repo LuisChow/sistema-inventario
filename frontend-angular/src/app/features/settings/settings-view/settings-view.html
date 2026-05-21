@@ -1,0 +1,122 @@
+<div class="settings-container">
+  <header class="settings-header">
+    <h2>⚙️ Configuración</h2>
+    <div class="tabs">
+      <button
+        class="tab-btn"
+        [class.active]="tabActiva === 'empresa'"
+        (click)="cambiarTab('empresa')">
+        🏢 Datos de la Empresa
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="tabActiva === 'respaldos'"
+        (click)="cambiarTab('respaldos')">
+        💾 Respaldos
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ TAB: EMPRESA ============ -->
+  @if (tabActiva === 'empresa') {
+    <section class="card">
+      <p class="card-intro">
+        Esta información aparece en las facturas impresas. Llénala para que tus
+        facturas se vean profesionales.
+      </p>
+
+      <div class="form-grid">
+        <label>Nombre de la empresa</label>
+        <input type="text" [(ngModel)]="empresa.empresa_nombre" maxlength="200" placeholder="Ej. Repuestos Chow C.A.">
+
+        <label>RIF / Identificación fiscal</label>
+        <input type="text" [(ngModel)]="empresa.empresa_rif" maxlength="50" placeholder="Ej. J-12345678-9">
+
+        <label>Dirección</label>
+        <input type="text" [(ngModel)]="empresa.empresa_direccion" maxlength="500" placeholder="Ej. Av. Principal, Centro Comercial X, Local 5">
+
+        <label>Teléfono</label>
+        <input type="text" [(ngModel)]="empresa.empresa_telefono" maxlength="100" placeholder="Ej. 0412-1234567">
+
+        <label>Email</label>
+        <input type="email" [(ngModel)]="empresa.empresa_email" maxlength="200" placeholder="Ej. contacto@miempresa.com">
+
+        <label>Mensaje en factura</label>
+        <input type="text" [(ngModel)]="empresa.empresa_mensaje" maxlength="500" placeholder="Ej. ¡Gracias por su compra!">
+
+        <label>Logo</label>
+        <div class="logo-field">
+          @if (empresa.empresa_logo) {
+            <img [src]="empresa.empresa_logo" alt="Logo de la empresa" class="logo-preview">
+            <button type="button" class="btn-secondary" (click)="quitarLogo()">Quitar</button>
+          } @else {
+            <span class="logo-placeholder">Sin logo</span>
+          }
+          <label class="btn-secondary file-btn">
+            Seleccionar imagen
+            <input type="file" accept="image/*" (change)="onLogoSelected($event)" hidden>
+          </label>
+        </div>
+        <div></div>
+        <small class="hint">Formato JPG o PNG. Máximo 500 KB. Se mostrará en la cabecera de cada factura.</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-primary" (click)="guardarEmpresa()" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : '💾 Guardar cambios' }}
+        </button>
+      </div>
+    </section>
+  }
+
+  <!-- ============ TAB: RESPALDOS ============ -->
+  @if (tabActiva === 'respaldos') {
+    <section class="card">
+      <p class="card-intro">
+        Los respaldos son copias completas de tu base de datos. Te protegen
+        de pérdidas si tu disco duro falla. Crea uno cada cierto tiempo y
+        guarda una copia en un USB externo.
+      </p>
+      <p class="card-hint">
+        📁 Los respaldos se guardan en:
+        <code>Documents\Inventario Chow\backups\</code>
+      </p>
+
+      <div class="backup-actions">
+        <button type="button" class="btn-primary" (click)="crearRespaldo()" [disabled]="creandoRespaldo">
+          {{ creandoRespaldo ? 'Creando...' : '+ Crear respaldo ahora' }}
+        </button>
+      </div>
+
+      @if (respaldos().length === 0) {
+        <div class="empty-state">
+          No hay respaldos todavía. Crea el primero antes de algún cambio importante.
+        </div>
+      } @else {
+        <table class="backups-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Fecha</th>
+              <th class="num">Tamaño</th>
+              <th class="actions">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (b of respaldos(); track b.nombre) {
+              <tr>
+                <td><code>{{ b.nombre }}</code></td>
+                <td>{{ b.fechaCreacion | date:'medium' }}</td>
+                <td class="num">{{ formatearTamano(b.tamanoBytes) }}</td>
+                <td class="actions">
+                  <button type="button" class="btn-small" (click)="restaurarRespaldo(b)">↩️ Restaurar</button>
+                  <button type="button" class="btn-small btn-danger" (click)="eliminarRespaldo(b)">🗑️ Eliminar</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  }
+</div>
