@@ -2,6 +2,44 @@
 
 Aplicación de escritorio full-stack para la gestión de inventarios empresariales. Permite administrar productos, controlar stock, registrar ventas con facturación, gestionar clientes y trabajar con múltiples monedas, todo desde una sola aplicación instalable en Windows.
 
+## Descargar la aplicación
+
+Puedes probar la aplicación sin compilar nada: descarga el instalador para Windows desde la sección de **[Releases](https://github.com/LuisChow/sistema-inventario/releases/latest)**.
+
+> **Nota:** el instalador no tiene firma digital, así que Windows mostrará una advertencia de SmartScreen al abrirlo. Haz clic en **"Más información"** y luego en **"Ejecutar de todos modos"** para continuar.
+
+## Capturas de pantalla
+
+### Panel de inicio
+
+![Panel de inicio](screenshots/Inicio.png)
+
+Estadísticas generales del negocio: total de catálogo, alertas de stock bajo, costos de inversión, ventas brutas y ganancia neta del mes.
+
+### Inventario y punto de venta
+
+![Inventario y punto de venta](screenshots/Inventario.png)
+
+Listado de productos con búsqueda, filtros por categoría, paginación, e importación/exportación de datos.
+
+### Facturación
+
+![Facturación en curso](screenshots/Carrito.png)
+
+Carrito de ventas con datos de facturación del cliente y cobro de la factura.
+
+### Historial de transacciones
+
+![Historial de transacciones](screenshots/Historial.png)
+
+Registro de todas las operaciones (ventas, ajustes, anulaciones) con la ganancia real calculada por cada venta.
+
+### Configuración
+
+![Configuración](screenshots/Configuracion.png)
+
+Datos de la empresa para las facturas impresas y sistema de respaldos de la base de datos.
+
 ## Características
 
 - **Gestión de productos** — Alta, baja, modificación y consulta de productos (repuestos) organizados por categorías.
@@ -16,20 +54,20 @@ Aplicación de escritorio full-stack para la gestión de inventarios empresarial
 
 ## Stack tecnológico
 
-| Capa | Tecnologías |
-|------|-------------|
-| Escritorio | Electron, electron-builder (instalador NSIS para Windows) |
-| Frontend | Angular 21 (componentes standalone, Signals, RxJS) |
-| Backend | Node.js, Express 5, API REST |
-| Base de datos | SQLite |
-| Utilidades | xlsx / xlsx-js-style (exportación a Excel) |
+| Capa          | Tecnologías                                               |
+| ------------- | --------------------------------------------------------- |
+| Escritorio    | Electron, electron-builder (instalador NSIS para Windows) |
+| Frontend      | Angular 21 (componentes standalone, Signals, RxJS)        |
+| Backend       | Node.js, Express 5, API REST                              |
+| Base de datos | SQLite                                                    |
+| Utilidades    | xlsx / xlsx-js-style (exportación a Excel)                |
 
 ## Arquitectura
 
 El proyecto está dividido en dos módulos independientes:
 
 ```
-Inventario/
+sistema-inventario/
 ├── backend-inventario/      # Proceso principal de Electron + servidor Express
 │   ├── main.js              # Punto de entrada de Electron (crea la ventana)
 │   ├── server.js            # API REST con 27+ endpoints
@@ -60,41 +98,41 @@ La base de datos SQLite se almacena en la carpeta `Documentos/Inventario Chow/` 
 
 1. Clonar el repositorio:
 
-   ```bash
-   git clone https://github.com/LuisChow/SistemaInventario.git
-   cd SistemaInventario
-   ```
+```
+git clone https://github.com/LuisChow/sistema-inventario.git
+cd sistema-inventario
+```
 
 2. Instalar dependencias del backend:
 
-   ```bash
-   cd backend-inventario
-   npm install
-   ```
+```
+cd backend-inventario
+npm install
+```
 
 3. Instalar dependencias del frontend:
 
-   ```bash
-   cd ../frontend-angular
-   npm install
-   ```
+```
+cd ../frontend-angular
+npm install
+```
 
 4. Compilar el frontend de Angular:
 
-   ```bash
-   npm run build
-   ```
+```
+npm run build
+```
 
 5. Iniciar la aplicación de escritorio:
 
-   ```bash
-   cd ../backend-inventario
-   npm start
-   ```
+```
+cd ../backend-inventario
+npm start
+```
 
 ### Generar el instalador de Windows
 
-```bash
+```
 cd backend-inventario
 npm run dist
 ```
@@ -105,16 +143,16 @@ El instalador `.exe` se generará en la carpeta `dist/`.
 
 El backend expone más de 27 endpoints organizados por recurso:
 
-| Recurso | Endpoints |
-|---------|-----------|
-| Productos | `GET/POST/PUT/DELETE /api/repuestos` |
-| Movimientos | `GET/POST /api/movimientos`, `DELETE /api/movimientos/factura/:id` |
-| Ventas | `POST /api/ventas` |
-| Categorías | `GET/POST/PUT/DELETE /api/categorias` |
-| Clientes | `GET/POST/PUT/DELETE /api/clientes` |
-| Configuración | `GET/PUT /api/configuracion` |
-| Tasas de cambio | `GET/POST /api/tasas`, `GET /api/tasas/latest` |
-| Respaldos | `GET/POST /api/backup`, `POST /api/restore`, `DELETE /api/backups/:nombre` |
+| Recurso         | Endpoints                                                                  |
+| --------------- | -------------------------------------------------------------------------- |
+| Productos       | `GET/POST/PUT/DELETE /api/repuestos`                                       |
+| Movimientos     | `GET/POST /api/movimientos`, `DELETE /api/movimientos/factura/:id`         |
+| Ventas          | `POST /api/ventas`                                                         |
+| Categorías      | `GET/POST/PUT/DELETE /api/categorias`                                      |
+| Clientes        | `GET/POST/PUT/DELETE /api/clientes`                                        |
+| Configuración   | `GET/PUT /api/configuracion`                                               |
+| Tasas de cambio | `GET/POST /api/tasas`, `GET /api/tasas/latest`                             |
+| Respaldos       | `GET/POST /api/backup`, `POST /api/restore`, `DELETE /api/backups/:nombre` |
 
 ## Autor
 
@@ -126,4 +164,4 @@ GitHub: [@LuisChow](https://github.com/LuisChow)
 
 Copyright (c) 2025 Luis Fernando Chunwa Chow Cheung. Todos los derechos reservados.
 
-Este proyecto se publica con fines de demostración y evaluación profesional. El código puede examinarse, pero no está permitido copiarlo, reutilizarlo, modificarlo ni redistribuirlo sin autorización previa del autor. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto se publica con fines de demostración y evaluación profesional. El código puede examinarse, pero no está permitido copiarlo, reutilizarlo, modificarlo ni redistribuirlo sin autorización previa del autor. Consulta el archivo [LICENSE](https://github.com/LuisChow/sistema-inventario/blob/main/LICENSE) para más detalles.
